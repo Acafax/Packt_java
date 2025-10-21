@@ -136,15 +136,41 @@ public class SecurityConfig {
 - Firebase project with Admin SDK credentials
 - Maven 3.8+
 - Docker (optional)
+- **`.env` file** with database credentials (required for Docker deployment)
 
 > **⚠️ IMPORTANT**: The application **will not start** without a valid Firebase Admin SDK configuration file. You must create a Firebase project and download the `adminsdk.json` file before running the application. See Firebase Configuration section below.
 
-### Environment Variables
+### Environment Setup
+
+#### 1. Create `.env` File
+Create a `.env` file in the project root directory with the following content:
+
 ```bash
-DB_PORT=localhost:5432
-DB_NAME=projektZespolowy
+# Database Configuration
+DB_USERNAME=your_username_here
+DB_PASSWORD=your_password_here
+```
+
+**Example `.env` file:**
+```bash
 DB_USERNAME=postgres
-DB_PASSWORD=password
+DB_PASSWORD=password123
+```
+
+
+#### 2. Environment Variables
+The application uses the following environment variables:
+
+**For Docker Deployment (from .env file):**
+```bash
+DB_USERNAME=postgres          # Database username
+DB_PASSWORD=your_password     # Database password
+```
+
+**Auto-configured by Docker Compose:**
+```bash
+DB_PORT=postgres:5432        # Database host and port (Docker internal network)
+DB_NAME=projektZespolowy     # Database name
 ```
 
 ### Firebase Configuration
@@ -325,5 +351,3 @@ Available at: `/actuator/health`
 - HTTP request metrics
 - Database connection pool metrics
 - Custom business metrics
-
-
