@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: spring-zespolowy
+    container_name: app
+    depends_on:
+      - postgres
+    env_file:
+      - .env
+    environment:
+      DB_PORT: postgres:5432
+      DB_NAME: projektZespolowy
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "8080:8080"
+
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: wiktor
+      POSTGRES_DB: projektZespolowy
+    ports:
+      - "5555:5432"
