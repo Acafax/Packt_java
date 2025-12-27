@@ -92,8 +92,7 @@ class UserControllerIntegrationTest {
         @Test
         @DisplayName("Should return list of all users from SQL")
         void testGetAllUsers_whenUsersExist_shouldReturnUserList() throws Exception {
-            mockMvc.perform(get("/user/all")
-                            .contentType(MediaType.APPLICATION_JSON))
+            mockMvc.perform(get("/user/all").contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                     .andExpect(jsonPath("$", hasSize(3)))

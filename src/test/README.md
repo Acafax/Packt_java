@@ -1,14 +1,14 @@
 # Integration Test Environment
 
-## 📋 Overview
+##Overview
 
 The test environment is configured for testing Spring Boot applications using:
-- **Testcontainers** - runs a real PostgreSQL database in a Docker container
+- **Testcontainers** - runs a PostgreSQL database in a Docker container
 - **Spring Boot Test** - full Spring context integration
 - **Disabled Security** - all endpoints are accessible without authentication
 - **Automatic data initialization** - SQL scripts loaded before each test
 
-## 🏗️ File Structure
+##File Structure
 
 ```
 src/test/
@@ -32,7 +32,7 @@ src/test/
         └── setUpGroupIntagrationTestEnvirament.sql
 ```
 
-## 🚀 How to Use
+##ow to Use
 
 ### 1. Creating a New Integration Test
 
@@ -133,7 +133,7 @@ SQL scripts automatically load:
 **Invitations:**
 - Test invitations for group management
 
-## 🧹 Database Management
+## Database Management
 
 Clean database in the middle of a test:
 
@@ -151,7 +151,7 @@ void setUp() {
 }
 ```
 
-## 🔧 Configuration
+## Configuration
 
 ### application-test.properties
 
@@ -175,7 +175,7 @@ public class TestSecurityConfig {
 }
 ```
 
-## 📝 Test Examples
+## Test Examples
 
 ### Controller Test with MockMvc
 
@@ -286,13 +286,13 @@ class GetExpenseByIdTests {
 }
 ```
 
-## ⚙️ Requirements
+##Requirements
 
 - Docker running locally (for Testcontainers)
 - Maven
 - Java 21+
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Issue: Testcontainers cannot connect to Docker
 
@@ -310,20 +310,10 @@ class GetExpenseByIdTests {
 
 **Solution:** Testcontainers automatically assigns random ports. If issues persist, restart Docker.
 
-## 📚 Additional Information
+##Additional Information
 
 - Tests use transactions - default rollback after each test
 - SQL logs are enabled in DEBUG mode
 - MockMvc automatically available for testing controllers
 - Each test class manages its own PostgreSQL container lifecycle
 - Database is recreated for each test method ensuring isolation
-
-## 🎯 Best Practices
-
-1. **Use @Nested classes** - Group related tests together
-2. **Use @DisplayName** - Provide clear test descriptions
-3. **Follow AAA pattern** - Arrange, Act, Assert
-4. **Clean database** - Always start with a clean state in @BeforeEach
-5. **Load only needed data** - Only load SQL scripts required for your tests
-6. **Test edge cases** - Not found, forbidden, bad request scenarios
-7. **Verify database state** - Check repository state after operations

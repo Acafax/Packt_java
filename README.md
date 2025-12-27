@@ -1,9 +1,9 @@
 # Packt - Social Trip Planning Platform
 
-## 📋 Project Description
+## Project Description
 
 Packt is a comprehensive social application designed for organizing and managing group trips. The platform enables users to connect, form travel groups, plan trips together, share photos and memories, track shared expenses, and create and schedule travel events. Built with Spring Boot and secured with Firebase Authentication, it provides a complete solution for collaborative trip planning and management.
-## 🚀 Key Features
+## Key Features
 
 - **User Management**: Registration, authentication, and profile management
 - **Group Trip Management**: Create and manage travel groups with multiple participants
@@ -15,7 +15,7 @@ Packt is a comprehensive social application designed for organizing and managing
 - **Document Management**: Attach documents, tickets, and travel-related files
 - **Real-time Monitoring**: Prometheus metrics and Spring Boot Actuator endpoints
 
-## 🛠️ Technology Stack
+##  Technology Stack
 
 ### Backend Framework
 - **Spring Boot 3.4.3** - Main application framework
@@ -44,7 +44,7 @@ Packt is a comprehensive social application designed for organizing and managing
 - **Testcontainers** - Integration testing with PostgreSQL containers
 - **MockMvc** - REST API testing
 
-## 🏗️ Architecture
+## Architecture
 
 ### Controller Layer
 The application follows a REST architecture with the following controllers:
@@ -83,7 +83,7 @@ Data access through Spring Data JPA repositories:
 Client Request → JWT Filter → Firebase Token Validation → Spring Security → Controller
 ```
 
-## 🔐 Authentication & Authorization
+## Authentication & Authorization
 
 ### Firebase Authentication
 The application uses Firebase Authentication for secure user management:
@@ -116,7 +116,7 @@ public class SecurityConfig {
 - `isExpenseCreator()` - Check if user created expense
 - `isRequestingUserisAuthorizedForAccount()` - Check user access rights
 
-## 📦 Data Models
+## Data Models
 
 ### Core Entities
 - **User**: User accounts with Firebase UID
@@ -128,7 +128,7 @@ public class SecurityConfig {
 - **Photo**: Image storage
 
 
-## 🚦 Getting Started
+## Getting Started
 
 ### Prerequisites
 - Java 23 or higher
@@ -138,7 +138,7 @@ public class SecurityConfig {
 - Docker (optional)
 - **`.env` file** with database credentials (required for Docker deployment)
 
-> **⚠️ IMPORTANT**: The application **will not start** without a valid Firebase Admin SDK configuration file. You must create a Firebase project and download the `adminsdk.json` file before running the application. See Firebase Configuration section below.
+> **IMPORTANT**: The application **will not start** without a valid Firebase Admin SDK configuration file. You must create a Firebase project and download the `adminsdk.json` file before running the application. See Firebase Configuration section below.
 
 ### Environment Setup
 
@@ -209,7 +209,7 @@ mvn test -Dtest=UserControllerIntegrationTest
 mvn clean test jacoco:report
 ```
 
-## 📊 API Endpoints
+## API Endpoints
 
 ### User Endpoints
 - `GET /user/all` - Get all users
@@ -248,7 +248,7 @@ mvn clean test jacoco:report
 - `GET /actuator/metrics` - Application metrics
 - `GET /actuator/prometheus` - Prometheus metrics
 
-## 🧪 Testing
+## Testing
 
 The project includes comprehensive integration tests:
 
@@ -276,7 +276,7 @@ mvn test -Dtest=GroupControllerIntegrationTest
 mvn verify
 ```
 
-## 📁 Project Structure
+## Project Structure
 ```
 src/
 ├── main/
@@ -303,7 +303,7 @@ src/
         └── data/                   # Test data SQL scripts
 ```
 
-## 🔧 Configuration
+## Configuration
 
 ### Database Configuration
 ```properties
@@ -326,7 +326,7 @@ management.endpoint.health.show-details=always
 management.endpoint.prometheus.enabled=true
 ```
 
-## 🐳 Docker Support
+## Docker Support
 
 ### Docker Compose
 ```bash
@@ -338,7 +338,7 @@ This starts:
 - PostgreSQL database
 - Prometheus (optional)
 
-## 📈 Monitoring
+## Monitoring
 
 ### Prometheus Metrics
 Available at: `/actuator/prometheus`
