@@ -54,7 +54,7 @@ public class GroupService {
     }
 
     public Group getGroupById(Long id){
-        return groupRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        return groupRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Group not found"));
     }
 
     public Boolean groupExists(Long id){
@@ -74,7 +74,7 @@ public class GroupService {
             List<Group> all = groupRepository.findAll();
             return groupDtoMapper.convert(all);
         }catch (EmptyResultDataAccessException ex){
-            throw new EntityNotFoundException();
+            throw new EntityNotFoundException("Group not found");
         }
     }
 
@@ -100,7 +100,7 @@ public class GroupService {
 
             Group save = groupRepository.save(group);
             return groupDtoMapper.convert(save);
-        }).orElseThrow(EntityNotFoundException::new);
+        }).orElseThrow(() -> new EntityNotFoundException("Group not found"));
     }
 
     @PreAuthorize("@securityService.isGroupAdministrator(authentication.name, #groupId)")
@@ -115,7 +115,7 @@ public class GroupService {
 
             Group newGroup = groupRepository.save(group);
             return groupDtoMapper.convert(newGroup);
-        }).orElseThrow(EntityNotFoundException::new);
+        }).orElseThrow(() -> new EntityNotFoundException("Group not found"));
     }
 
     public void deleteGroup(Long id){
@@ -125,7 +125,7 @@ public class GroupService {
 
     @PreAuthorize("@securityService.isGroupMember(authentication.name, #groupId)")
     public Group getGroupWithUsersById(Long groupId){
-        if (!groupExists(groupId)) throw new EntityNotFoundException();
+        if (!groupExists(groupId)) throw new EntityNotFoundException("Group not found");
         return groupRepository.findGroupWithUsersById(groupId);
     }
 
@@ -138,7 +138,7 @@ public class GroupService {
 
     public void patchGroupProfilePhoto(Long groupId, Long newProfilePhotoId) {
         groupRepository.findById(groupId)
-                .orElseThrow(EntityNotFoundException::new)
+                .orElseThrow(() -> new EntityNotFoundException("Group not found"))
                 .setProfilePhotoId(newProfilePhotoId);
     }
 }

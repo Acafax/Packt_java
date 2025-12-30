@@ -50,7 +50,7 @@ public class UserGroupServices {
 
     @PreAuthorize("@securityService.isGroupMember(authentication.name, #groupId)")
     public GroupWithUsersDto getGroupByIdWithUsers(Long groupId){
-        if (!groupService.groupExists(groupId)) throw new EntityNotFoundException();
+        if (!groupService.groupExists(groupId)) throw new EntityNotFoundException("Group not found");
 
         if (!userGroupRepository.existsUserGroupByGroup_Id(groupId)){
             Group group = groupService.getGroupById(groupId);
@@ -134,7 +134,7 @@ public class UserGroupServices {
 //    }
 
     public UserDto deleteUserGroupByUId(String userUId){
-        if (!userGroupRepository.existsUserGroupByUser_UId(userUId)) throw new EntityNotFoundException();
+        if (!userGroupRepository.existsUserGroupByUser_UId(userUId)) throw new EntityNotFoundException("UserGroup not found");
 
         UserDto userDto = userService.getUserDtoByUId(userUId);
         userGroupRepository.deleteUserGroupByUser_UId(userUId);
@@ -143,7 +143,7 @@ public class UserGroupServices {
     }
 
     public GroupDto deleteUserGroupByGroupId(Long groupId){
-        if (!userGroupRepository.existsUserGroupByGroup_Id(groupId)) throw new EntityNotFoundException();
+        if (!userGroupRepository.existsUserGroupByGroup_Id(groupId)) throw new EntityNotFoundException("UserGroup not found");
 
         GroupDto groupDto = groupService.getGroupDTOById(groupId);
         userGroupRepository.deleteUserGroupByGroup_Id(groupId);

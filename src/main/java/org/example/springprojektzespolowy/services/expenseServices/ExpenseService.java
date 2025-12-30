@@ -72,7 +72,7 @@ public class ExpenseService {
     public ExpenseParticipants updateExpense(UpdateExpenseDto updateExpenseDto) throws BadRequestException {
         if (containCreatorAndIsNotEmpty(updateExpenseDto)) throw new BadRequestException();
         Expense expense = expesnsesRepository.findById(updateExpenseDto.id())
-                .orElseThrow(EntityNotFoundException::new);
+                .orElseThrow(() -> new EntityNotFoundException("Expense not found"));
         expense.setName(updateExpenseDto.name());
         expense.setDescription(updateExpenseDto.description());
         expense.setCategory(updateExpenseDto.category());
@@ -98,7 +98,7 @@ public class ExpenseService {
     @Transactional
     @PreAuthorize("@securityService.isExpenseCreatorByExpId(authentication.name, #expId)")
     public ExpenseWithoutDocumentsAndEventsDto deleteExpById(Long expId){
-        Expense expense = expesnsesRepository.findById(expId).orElseThrow(EntityNotFoundException::new);
+        Expense expense = expesnsesRepository.findById(expId).orElseThrow(() -> new EntityNotFoundException("Expense not found"));
         expensesUserRepository.deleteByExpense_Id(expId);
         expesnsesRepository.deleteById(expId);
         return expensesDtoMaper.convertWithout(expense);
@@ -106,7 +106,7 @@ public class ExpenseService {
 
     @PreAuthorize("@securityService.isGroupMember(authentication.name, #groupId)")
     public List<ExpenseDto> getExpensesByGroupId(Long groupId){
-        if(!groupService.groupExists(groupId)) throw new EntityNotFoundException();
+        if(!groupService.groupExists(groupId)) throw new EntityNotFoundException("Group not found");
         List<Expense> expenseByGroupId = expesnsesRepository.getExpenseByGroup_Id(groupId);
         List<Expense> sortedExpenses = expenseByGroupId.stream()
                 .sorted(Comparator.comparing(Expense::getId))
@@ -117,14 +117,14 @@ public class ExpenseService {
     @PreAuthorize("@securityService.isGroupMember(authentication.name, #groupId)")
     @Transactional
     public ExpenseWithoutDocumentsAndEventsDto getExpById(Long expId, Long groupId){
-        Expense expense = expesnsesRepository.findById(expId).orElseThrow(EntityNotFoundException::new);
+        Expense expense = expesnsesRepository.findById(expId).orElseThrow(() -> new EntityNotFoundException("Expense not found"));
         System.out.println(expense.getParticipants().size());
         return expensesDtoMaper.convertWithout(expense);
     }
 
     public ExpensesUser addParticipant(Expense expense, String uId, String role){
         User user = userService.getUserByUId(uId);
-        if (user==null) throw new EntityNotFoundException();
+        if (user==null) throw new EntityNotFoundException("User not found");
         ExpensesUserKey key = new ExpensesUserKey(user.getId(),expense.getId());
         ExpensesUser expensesUser = new ExpensesUser(key, user, expense, role);
         return expensesUserRepository.save(expensesUser);

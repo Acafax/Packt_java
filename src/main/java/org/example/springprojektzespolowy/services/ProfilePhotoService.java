@@ -42,7 +42,7 @@ public class ProfilePhotoService {
 
     public ProfilePhotoDto getUserProfile(Long profilePhotoId){
         ProfilePhotoUser profilePhotoUser = profilePhotoUserRepository.findById(profilePhotoId)
-                .orElseThrow(EntityNotFoundException::new);
+                .orElseThrow(() -> new EntityNotFoundException("Profile photo not found"));
 
         return photoDtoMapper.convert(profilePhotoUser);
     }
@@ -50,7 +50,7 @@ public class ProfilePhotoService {
     @PreAuthorize("@securityService.isRequestingUserisAuthorizedForAccount(authentication.name, #Uid)")
     @Transactional
     public Long uploadUserProfilePhoto(CreateProfilePhotoDto createProfilePhotoDto, String Uid) throws IOException {
-        if (!userService.userExistsByUId(Uid)) throw new EntityNotFoundException();
+        if (!userService.userExistsByUId(Uid)) throw new EntityNotFoundException("User not found");
         byte[] fileBytes = photoConverter(createProfilePhotoDto);
 
         User user = userService.getUserByUId(Uid);
@@ -73,7 +73,7 @@ public class ProfilePhotoService {
     public Long uploadGroupProfilePhoto(CreateProfilePhotoDto createProfilePhotoDto, Long groupId) throws IOException {
         if (!groupService.groupExists(groupId)) {
             log.info("Group with id: {}",groupId);
-            throw new EntityNotFoundException();
+            throw new EntityNotFoundException("Group not found");
         }
         byte[] fileBytes = photoConverter(createProfilePhotoDto);
 
@@ -93,7 +93,7 @@ public class ProfilePhotoService {
 
     public ProfilePhotoDto getGroupProfile(Long profilePhotoId){
         ProfilePhotoGroup profilePhotoUser = profilePhotoGroupRepository.findById(profilePhotoId)
-                .orElseThrow(EntityNotFoundException::new);
+                .orElseThrow(() -> new EntityNotFoundException("Profile photo not found"));
 
         return photoDtoMapper.convert(profilePhotoUser);
     }

@@ -44,26 +44,18 @@ public class EventService {
 
     @PreAuthorize("@securityService.isGroupMember(authentication.name, #groupId)")
     public Set<EventDto> getEventsByNameAndGroupId(String eventName, Long groupId){
-        try {
-            if (!eventRepository.existsEventByName(eventName) || !groupService.groupExists(groupId)) throw new EntityNotFoundException();
-            Set<Event> events = eventRepository.getEventsByNameAndGroupId(eventName, groupId);
-            return eventDtoMapper.convert(events);
-        }catch (EntityNotFoundException ex){
-            throw new EntityNotFoundException(ex.getMessage());
-        }
-
+        if (!eventRepository.existsEventByName(eventName)) throw new EntityNotFoundException("Event not found");
+        if (!groupService.groupExists(groupId)) throw new EntityNotFoundException("Group not found");
+        Set<Event> events = eventRepository.getEventsByNameAndGroupId(eventName, groupId);
+        return eventDtoMapper.convert(events);
     }
 
     @PreAuthorize("@securityService.isGroupMember(authentication.name, #groupId)")
     public Set<EventDto> getAllEventsByGroupId(Long groupId){
-        try {
-            if(!groupService.groupExists(groupId)) throw new EntityNotFoundException();
+        if(!groupService.groupExists(groupId)) throw new EntityNotFoundException("Group not found");
 
-            Set<Event> allByGroupId = eventRepository.getEventsByGroupId(groupId);
-            return eventDtoMapper.convert(allByGroupId);
-        }catch (EntityNotFoundException e){
-            throw new EntityNotFoundException(e);
-        }
+        Set<Event> allByGroupId = eventRepository.getEventsByGroupId(groupId);
+        return eventDtoMapper.convert(allByGroupId);
     }
 
     public Boolean eventExistsByid(Long eventId){
@@ -92,7 +84,7 @@ public class EventService {
 
                     return eventDtoMapper.convert(existingEvent);
                 })
-                .orElseThrow(EntityNotFoundException::new);
+                .orElseThrow(() -> new EntityNotFoundException("Event not found"));
     }
 
     public void deleteMemberWhileDeletingUserByUid(String Uid){

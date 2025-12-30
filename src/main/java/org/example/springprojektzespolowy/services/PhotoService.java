@@ -43,7 +43,7 @@ public class PhotoService {
     @Transactional
     @PreAuthorize("@securityService.isGroupMemberByPhoto(authentication.name, #photoId)")
     public PhotoDto getPhotoById(Long photoId){
-        Photo photo = photoRepository.findById(photoId).orElseThrow(EntityNotFoundException::new);
+        Photo photo = photoRepository.findById(photoId).orElseThrow(() -> new EntityNotFoundException("Photo not found"));
 
         return photoDtoMapper.convert(photo);
     }
@@ -73,7 +73,7 @@ public class PhotoService {
     @PreAuthorize("@securityService.isGroupMemberByPhoto(authentication.name, #id)")
     public PhotoDtoWithoutFile patchPhotoName(Long id, String newPhotoName){
         System.out.println(newPhotoName);
-        Photo photo = photoRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        Photo photo = photoRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Photo not found"));
 
         photo.setName(newPhotoName);
 

@@ -48,7 +48,7 @@ public class DocumentService {
     @Transactional
     @PreAuthorize("@securityService.isGroupMemberByDocument(authentication.name, #id)")
     public DocumentDtoWithFile getDocumentWithFileById(Long id){
-        Document document = documentsRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        Document document = documentsRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Document not found"));
         return documentDtoMapper.convertWithFiles(document);
     }
 
@@ -63,18 +63,14 @@ public class DocumentService {
     @Transactional
     @PreAuthorize("@securityService.isGroupMemberByDocument(authentication.name, #id)")
     public DocumentDto getDocumentById(Long id){
-        try {
-            Document document = documentsRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-            return documentDtoMapper.convert(document);
-        }catch (EntityNotFoundException ex){
-            throw new EntityNotFoundException(ex);
-        }
+        Document document = documentsRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Document not found"));
+        return documentDtoMapper.convert(document);
     }
     @Transactional
     @PreAuthorize("@securityService.isGroupMember(authentication.name, #groupId)")
     public DocumentDtoWithFile getDocumentsInGroupDocByName(Long groupId, String ticketName){
         Document ticketFromGroupByName = documentsRepository.getDocumentFromGroupByIdAndByDocName(groupId, ticketName);
-        if (ticketFromGroupByName == null) throw new EntityNotFoundException();
+        if (ticketFromGroupByName == null) throw new EntityNotFoundException("Document not found");
         return documentDtoMapper.convertWithFiles(ticketFromGroupByName);
     }
 
@@ -106,7 +102,7 @@ public class DocumentService {
     @PreAuthorize("@securityService.isGroupMember(authentication.name, #groupId)")
     @Transactional
     public DocumentDto deleteDocument(Long id, Long groupId){
-        Document document = documentsRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        Document document = documentsRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Document not found"));
         documentsRepository.deleteById(id);
 
         return documentDtoMapper.convert(document);
@@ -128,7 +124,7 @@ public class DocumentService {
                     documentsRepository.save(existingTicket);
                     return documentDtoMapper.convert(existingTicket);
                 })
-                 .orElseThrow(EntityNotFoundException::new);
+                 .orElseThrow(() -> new EntityNotFoundException("Document not found"));
     }
 
     @PreAuthorize("@securityService.isGroupMember(authentication.name, #groupId)")
@@ -141,7 +137,7 @@ public class DocumentService {
                     documentsRepository.save(existingTicket);
                     return documentDtoMapper.convert(existingTicket);
                 })
-                .orElseThrow(EntityNotFoundException::new);
+                .orElseThrow(() -> new EntityNotFoundException("Document not found"));
     }
 
     @ExceptionHandler(AccessDeniedException.class)

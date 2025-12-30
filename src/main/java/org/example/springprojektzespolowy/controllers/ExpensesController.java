@@ -1,13 +1,11 @@
 package org.example.springprojektzespolowy.controllers;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
 import org.example.springprojektzespolowy.dto.expenses.*;
 import org.example.springprojektzespolowy.services.expenseServices.ExpenseService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,88 +25,32 @@ public class ExpensesController {
 
     @GetMapping("/{groupId}")
     ResponseEntity<List<ExpenseDto>> getExpenses(@PathVariable Long groupId){
-        try {
-            List<ExpenseDto> expenses = expenseService.getExpensesByGroupId(groupId);
-            return ResponseEntity.ok(expenses);
-        }catch (EntityNotFoundException ex){
-            return ResponseEntity.notFound().build();
-        }catch (AccessDeniedException ex){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
-        catch (Exception e) {
-            e.getMessage();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        List<ExpenseDto> expenses = expenseService.getExpensesByGroupId(groupId);
+        return ResponseEntity.ok(expenses);
     }
 
     @GetMapping("/{groupId}/{expId}")
     ResponseEntity<ExpenseWithoutDocumentsAndEventsDto> getExp(@PathVariable Long groupId, @PathVariable Long expId){
-        try {
-            ExpenseWithoutDocumentsAndEventsDto expense = expenseService.getExpById(expId, groupId);
-            return ResponseEntity.ok(expense);
-        }catch (EntityNotFoundException ex){
-            return ResponseEntity.notFound().build();
-        }catch (AccessDeniedException ex){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }catch (Exception e) {
-            e.getMessage();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        ExpenseWithoutDocumentsAndEventsDto expense = expenseService.getExpById(expId, groupId);
+        return ResponseEntity.ok(expense);
     }
 
     @PostMapping("/{groupId}")
-    ResponseEntity<ExpenseParticipants> createExpenses(@RequestBody CreateExpenseDto createExpenseDto, @PathVariable Long groupId){
-        try {
-            ExpenseParticipants expense = expenseService.createExpense(createExpenseDto, groupId);
-            return ResponseEntity.ok(expense);
-        }catch (EntityNotFoundException ex){
-            return ResponseEntity.notFound().build();
-        }catch (AccessDeniedException ex){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }catch (BadRequestException ex){
-            return ResponseEntity.badRequest().build();
-        }
-        catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+    ResponseEntity<ExpenseParticipants> createExpenses(@RequestBody CreateExpenseDto createExpenseDto, @PathVariable Long groupId) throws BadRequestException {
+        ExpenseParticipants expense = expenseService.createExpense(createExpenseDto, groupId);
+        return ResponseEntity.ok(expense);
     }
 
     @PutMapping("")
-    ResponseEntity<ExpenseParticipants> updateExpense(@RequestBody  UpdateExpenseDto updateExpenseDto){
-        try {
-
-            ExpenseParticipants expenseParticipants = expenseService.updateExpense(updateExpenseDto);
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body(expenseParticipants);
-
-        }catch (BadRequestException ex){
-            return ResponseEntity.badRequest().build();
-        }catch (EntityNotFoundException ex){
-            return ResponseEntity.notFound().build();
-        }catch (AccessDeniedException ex){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
-        catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-
-
+    ResponseEntity<ExpenseParticipants> updateExpense(@RequestBody UpdateExpenseDto updateExpenseDto) throws BadRequestException {
+        ExpenseParticipants expenseParticipants = expenseService.updateExpense(updateExpenseDto);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(expenseParticipants);
     }
-
-
 
     @DeleteMapping("/{expId}")
     ResponseEntity<ExpenseWithoutDocumentsAndEventsDto> deleteExp(@PathVariable Long expId){
-        try {
-            ExpenseWithoutDocumentsAndEventsDto expenseDto = expenseService.deleteExpById(expId);
-            return ResponseEntity.ok(expenseDto);
-        }catch (EntityNotFoundException ex){
-            return ResponseEntity.notFound().build();
-        }catch (AccessDeniedException ex){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
-        catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        ExpenseWithoutDocumentsAndEventsDto expenseDto = expenseService.deleteExpById(expId);
+        return ResponseEntity.ok(expenseDto);
     }
 
 }

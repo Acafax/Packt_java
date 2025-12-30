@@ -53,7 +53,7 @@ public class UserService {
             User user = userRepository.findByUId(UId);
             return userDtoMapper.convert(user);
         }
-        throw new EntityNotFoundException();
+        throw new EntityNotFoundException("User not found");
     }
 
     //@PreAuthorize("@securityService.isRequestingUserisAuthorizedForAccount(authentication.name,#UId)")
@@ -127,7 +127,7 @@ public class UserService {
 
     @Transactional
     public UserDto createUser(CreateUserDto createUserDto){
-        if (createUserDto.profilePhotoId()!= null && !photoService.photoExistById(createUserDto.profilePhotoId())) throw new EntityNotFoundException();
+        if (createUserDto.profilePhotoId()!= null && !photoService.photoExistById(createUserDto.profilePhotoId())) throw new EntityNotFoundException("Photo not found");
 
         User user = userDtoMapper.convert(createUserDto);
         User save = userRepository.save(user);

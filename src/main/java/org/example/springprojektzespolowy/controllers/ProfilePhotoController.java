@@ -1,16 +1,15 @@
 package org.example.springprojektzespolowy.controllers;
 
-import jakarta.persistence.EntityNotFoundException;
 import org.apache.coyote.BadRequestException;
 import org.example.springprojektzespolowy.dto.photo.*;
 import org.example.springprojektzespolowy.services.ProfilePhotoService;
 import org.example.springprojektzespolowy.utils.ImageUtils;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.UnsupportedMediaTypeStatusException;
+
+import java.io.IOException;
 
 @Controller
 @RequestMapping("/profile")
@@ -25,91 +24,44 @@ public class ProfilePhotoController {
 
 
     @PostMapping(value = "/user/upload/{Uid}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Long> uploadUserProfilePhoto(@ModelAttribute CreateProfilePhotoDto createPhotoDto, @PathVariable String Uid){
-        try {
-            if (createPhotoDto.photoType().isEmpty() || createPhotoDto.file().isEmpty()) throw new BadRequestException();
-            Long photoId = profilePhotoService.uploadUserProfilePhoto(createPhotoDto, Uid);
-
-            return ResponseEntity.ok(photoId);
+    public ResponseEntity<Long> uploadUserProfilePhoto(@ModelAttribute CreateProfilePhotoDto createPhotoDto, @PathVariable String Uid) throws BadRequestException, IOException {
+        if (createPhotoDto.photoType().isEmpty() || createPhotoDto.file().isEmpty()) {
+            throw new BadRequestException("Photo type and file are required");
         }
-        catch (BadRequestException ex){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }catch (UnsupportedMediaTypeStatusException ex){
-            return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).build();
-        }catch (EntityNotFoundException ex){
-            return ResponseEntity.notFound().build();
-        } catch (Exception ex){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-
-
+        Long photoId = profilePhotoService.uploadUserProfilePhoto(createPhotoDto, Uid);
+        return ResponseEntity.ok(photoId);
     }
 
     @GetMapping("/user/{photoId}")
-    public ResponseEntity<byte[]> getUserProfile(@PathVariable Long photoId){
-        try {
-            ProfilePhotoDto userProfile = profilePhotoService.getUserProfile(photoId);
+    public ResponseEntity<byte[]> getUserProfile(@PathVariable Long photoId) throws BadRequestException {
+        ProfilePhotoDto userProfile = profilePhotoService.getUserProfile(photoId);
 
-            boolean b = imageUtils.photoValidator(userProfile.photoFile(), userProfile.fileType());
+        imageUtils.photoValidator(userProfile.photoFile(), userProfile.fileType());
 
-            return ResponseEntity.ok()
-                    .contentType(MediaType.parseMediaType(userProfile.fileType()))
-                    .body(userProfile.photoFile());
-        }catch (BadRequestException ex){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        } catch (UnsupportedMediaTypeStatusException ex){
-            return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).build();
-        }catch (EntityNotFoundException ex){
-            return ResponseEntity.notFound().build();
-        } catch (Exception ex){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(userProfile.fileType()))
+                .body(userProfile.photoFile());
     }
 
 
     @PostMapping(value = "/group/upload/{groupId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Long> uploadGroupProfilePhoto(@ModelAttribute CreateProfilePhotoDto createPhotoDto, @PathVariable Long groupId){
-        try {
-            if (createPhotoDto.photoType().isEmpty() || createPhotoDto.file().isEmpty()) throw new BadRequestException();
-            Long photoId = profilePhotoService.uploadGroupProfilePhoto(createPhotoDto, groupId);
-            return ResponseEntity.ok(photoId);
+    public ResponseEntity<Long> uploadGroupProfilePhoto(@ModelAttribute CreateProfilePhotoDto createPhotoDto, @PathVariable Long groupId) throws BadRequestException, IOException {
+        if (createPhotoDto.photoType().isEmpty() || createPhotoDto.file().isEmpty()) {
+            throw new BadRequestException("Photo type and file are required");
         }
-        catch (BadRequestException ex){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }catch (UnsupportedMediaTypeStatusException ex){
-            return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).build();
-        }catch (EntityNotFoundException ex){
-            return ResponseEntity.notFound().build();
-        } catch (Exception ex){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-
+        Long photoId = profilePhotoService.uploadGroupProfilePhoto(createPhotoDto, groupId);
+        return ResponseEntity.ok(photoId);
     }
 
     @GetMapping("/group/{photoId}")
-    public ResponseEntity<byte[]> getGroupProfile(@PathVariable Long photoId){
-        try {
-            ProfilePhotoDto groupProfile = profilePhotoService.getGroupProfile(photoId);
+    public ResponseEntity<byte[]> getGroupProfile(@PathVariable Long photoId) throws BadRequestException {
+        ProfilePhotoDto groupProfile = profilePhotoService.getGroupProfile(photoId);
 
-            imageUtils.photoValidator(groupProfile.photoFile(), groupProfile.fileType());
+        imageUtils.photoValidator(groupProfile.photoFile(), groupProfile.fileType());
 
-            return ResponseEntity.ok()
-                    .contentType(MediaType.parseMediaType(groupProfile.fileType()))
-                    .body(groupProfile.photoFile());
-        }catch (BadRequestException ex){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        } catch (UnsupportedMediaTypeStatusException ex){
-            return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).build();
-        }catch (EntityNotFoundException ex){
-            return ResponseEntity.notFound().build();
-        } catch (Exception ex){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(groupProfile.fileType()))
+                .body(groupProfile.photoFile());
     }
-
-
-
-
-
 
 }

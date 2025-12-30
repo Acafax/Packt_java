@@ -61,7 +61,7 @@ public class InvitationService {
     @PreAuthorize("@securityService.isRequestingUserisAuthorizedForAccount(authentication.name, #Uid)")
     public List<InvitationDto> showInvitations(String Uid){
         if (!userService.userExistsByUId(Uid)) {
-            throw new EntityNotFoundException();
+            throw new EntityNotFoundException("User not found");
         }
         List<Invitation> invitationsByUserUId = invitationRepository.getInvitationsByUser_UId(Uid);
 
@@ -79,17 +79,20 @@ public class InvitationService {
     @Transactional
     @PreAuthorize("@securityService.isRequestingUserisAuthorizedForAccount(authentication.name, #UId)")
     public InvitationDtoWithoutInviter deleteInvitation(String UId, Long groupId) throws EntityNotFoundException {
-        if (!groupService.groupExists(groupId) || !userService.userExistsByUId(UId)) {
-            throw new  EntityNotFoundException();
+        if (!groupService.groupExists(groupId)) {
+            throw new EntityNotFoundException("Group not found");
+        }
+        if (!userService.userExistsByUId(UId)) {
+            throw new EntityNotFoundException("User not found");
         }
 
         Invitation invitation = invitationRepository.findByUser_UIdAndGroup_Id(UId, groupId);
 
-        if (invitation ==null){
-            throw new EntityNotFoundException();
+        if (invitation == null){
+            throw new EntityNotFoundException("Invitation not found");
         }
 
-        invitationRepository.deleteInvitationByUser_UIdAndGroup_Id(UId,groupId);
+        invitationRepository.deleteInvitationByUser_UIdAndGroup_Id(UId, groupId);
         return invitationDtoMapper.convert(invitation);
 
 

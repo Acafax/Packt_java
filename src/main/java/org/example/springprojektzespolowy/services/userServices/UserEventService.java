@@ -64,7 +64,7 @@ public class UserEventService {
     }
 
     public EventDto deleteUserEventByEventId(Long eventId){
-        if (!userEventRepository.existsUserEventByEvent_Id(eventId)) throw new EntityNotFoundException();
+        if (!userEventRepository.existsUserEventByEvent_Id(eventId)) throw new EntityNotFoundException("UserEvent not found");
 
         EventDto event = eventService.getEventDtoById(eventId);
         userEventRepository.deleteUserEventByEvent_Id(eventId);

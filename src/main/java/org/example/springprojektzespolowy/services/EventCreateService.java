@@ -68,7 +68,7 @@ public class EventCreateService {
     @PreAuthorize("@securityService.isGroupAdministrator(authentication.name, #groupId)")
     public UserEventDto addMemberToEvent(String UId, Long eventId, Long groupId){
         UserWithRoleDto userWithRoleDto = userEventService.addEventMember(eventId, UId, groupId);
-        Event event = eventRepository.findById(eventId).orElseThrow(EntityNotFoundException::new);
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new EntityNotFoundException("Event not found"));
         EventDto convert = eventDtoMapper.convert(event);
         return new UserEventDto(convert,Set.of(userWithRoleDto));
     }
@@ -102,6 +102,6 @@ public class EventCreateService {
                     eventRepository.save(existingEvent);
                     return eventDtoMapper.convert(existingEvent, updatedParticipants);
                 })
-                .orElseThrow(EntityNotFoundException::new);
+                .orElseThrow(() -> new EntityNotFoundException("Event not found"));
     }
 }
