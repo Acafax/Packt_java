@@ -43,7 +43,7 @@ public class UserService {
             User user = userRepository.findByUId(UId);
             return userDtoMapper.convert(user);
         }
-        throw new EntityNotFoundException();
+        throw new EntityNotFoundException("User not found");
     }
 
 //    @PreAuthorize("@securityService.isRequestingUserisAuthorizedForAccount(authentication.name,#UId)")

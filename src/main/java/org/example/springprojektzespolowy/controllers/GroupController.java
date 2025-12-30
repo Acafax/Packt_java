@@ -79,18 +79,10 @@ public class GroupController {
 
     @GetMapping("/{groupId}/details")
     public ResponseEntity<GroupDetailsDto> getGroupDetailsById(@PathVariable Long groupId){
-        try {
+
             GroupDetailsDto groupById = groupService.getGroupDetailsById(groupId);
             return ResponseEntity.ok(groupById);
-        }catch (EntityNotFoundException ex){
-            return ResponseEntity.notFound().build();
-        }
-        catch (AccessDeniedException ex){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
-        catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+
     }
 
     @PostMapping("/create")

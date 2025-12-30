@@ -44,7 +44,7 @@ public class GroupService {
     @Transactional
     @PreAuthorize("@securityService.isGroupMember(authentication.name, #id)")
     public GroupDetailsDto getGroupDetailsById(Long id){
-        if (!groupExists(id)) throw new EntityNotFoundException();
+        if (!groupExists(id)) throw new EntityNotFoundException("Group not found");
 
         Group group = groupRepository.findGroupDetailsById(id);
         int numberOfMembers = group.getUsers().size();

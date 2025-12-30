@@ -51,12 +51,9 @@ public class UserController {
 
     @GetMapping("/{UId}")
     public ResponseEntity<UserDto> getUserById(@PathVariable String UId){
-        try {
-            UserDto user = userService.getUserByUIdForController(UId);
-            return ResponseEntity.ok(user);
-        }catch (EntityNotFoundException ex){
-            return ResponseEntity.notFound().build();
-        }
+        UserDto user = userService.getUserByUIdForController(UId);
+        return ResponseEntity.ok(user);
+
     }
 
     @GetMapping("/{UId}/groups/details")
